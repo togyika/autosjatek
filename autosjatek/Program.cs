@@ -33,6 +33,10 @@ class Program
 
         if (key == ConsoleKey.LeftArrow && playerLane > 0)
             playerLane--;
+        if (key == ConsoleKey.A && playerLane > 0)
+            playerLane--;
+        if (key == ConsoleKey.D && playerLane < 2)
+            playerLane++;
         if (key == ConsoleKey.RightArrow && playerLane < Lanes - 1)
             playerLane++;
     }
