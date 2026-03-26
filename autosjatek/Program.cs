@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 class Program
+    
 {
     const int LaneWidth = 10;
     const int Lanes = 3;
