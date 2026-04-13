@@ -10,6 +10,8 @@ class Program
     static int playerLane;
     static int roadOffset;
 
+    static int score = 0;
+
     static int FieldWidth => Lanes * (LaneWidth + 1) + 1;
     static int OffsetX => (Console.WindowWidth - FieldWidth) / 2;
     static int OffsetY => (Console.WindowHeight - Height) / 2;
@@ -42,10 +44,16 @@ class Program
             playerLane++;
     }
     static void Update()
-    { roadOffset++; }
+    {
+        roadOffset++;
+        score++; 
+    }
     static void Draw()
     {
         Console.Clear();
+
+        Console.SetCursorPosition(0, 0);
+        Console.Write($"Score: {score}");
 
         for (int y = 0; y < Height; y++)
         {
