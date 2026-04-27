@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
+
 class Program
-    
 {
     const int LaneWidth = 10;
     const int Lanes = 3;
@@ -9,8 +9,9 @@ class Program
 
     static int playerLane;
     static int roadOffset;
-
     static int score = 0;
+    static int scoreCounter = 0;
+    static int carOffset = 0;
 
     static int FieldWidth => Lanes * (LaneWidth + 1) + 1;
     static int OffsetX => (Console.WindowWidth - FieldWidth) / 2;
@@ -20,6 +21,7 @@ class Program
     {
         Console.CursorVisible = false;
         playerLane = 1;
+
         while (true)
         {
             Input();
@@ -28,26 +30,41 @@ class Program
             Thread.Sleep(120);
         }
     }
+
     static void Input()
     {
         if (!Console.KeyAvailable) return;
 
         var key = Console.ReadKey(true).Key;
 
-        if (key == ConsoleKey.LeftArrow && playerLane > 0)
+        if ((key == ConsoleKey.LeftArrow || key == ConsoleKey.A) && playerLane > 0)
+        {
             playerLane--;
-        if (key == ConsoleKey.A && playerLane > 0)
-            playerLane--;
-        if (key == ConsoleKey.D && playerLane < 2)
+            carOffset = -2;
+        }
+
+        if ((key == ConsoleKey.RightArrow || key == ConsoleKey.D) && playerLane < Lanes - 1)
+        {
             playerLane++;
-        if (key == ConsoleKey.RightArrow && playerLane < Lanes - 1)
-            playerLane++;
+            carOffset = 2;
+        }
     }
+
     static void Update()
     {
         roadOffset++;
-        score++; 
+
+        scoreCounter++;
+        if (scoreCounter >= 5)
+        {
+            score++;
+            scoreCounter = 0;
+        }
+
+        if (carOffset > 0) carOffset--;
+        if (carOffset < 0) carOffset++;
     }
+
     static void Draw()
     {
         Console.Clear();
@@ -73,16 +90,17 @@ class Program
                 if (lane == playerLane && y >= Height - 3)
                 {
                     int part = y - (Height - 3);
+
                     cell = part switch
                     {
-                        0 => " |------| ",
-                        1 => " |______| ",
-                        2 => " |_|  |_| ",   
+                        0 => new string(' ', Math.Abs(carOffset)) + "|------|",
+                        1 => new string(' ', Math.Abs(carOffset)) + "|______|",
+                        2 => new string(' ', Math.Abs(carOffset)) + "|_|  |_|",
                         _ => cell
                     };
                 }
 
-                Console.Write(cell);
+                Console.Write(cell.PadRight(LaneWidth));
             }
 
             Console.WriteLine("|");
